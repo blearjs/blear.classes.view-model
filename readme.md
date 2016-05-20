@@ -13,7 +13,28 @@
 [coveralls-img]: https://img.shields.io/coveralls/blearjs/blear.classes.view-model/master.svg?maxAge=2592000&style=flat-square
 [coveralls-url]: https://coveralls.io/github/blearjs/blear.classes.view-model?branch=master
 
-相对于模板，扩展了以下实例指令
+
+## 入门
+```
+var vm = new ViewModel({
+    el: '#demo',
+    // 可省略，默认为 el.innerHTML，也可以是模板节点、模板数据
+    template: '#template',
+    data: {
+        username: '123'
+    },
+    methods: {}
+});
+```
+
++ 
+
+```
+<div id="demo">
+    <input type="text" @model="username">
+</div>
+```
+
 
 ## 事件
 - 事件的上下文为 `data`
@@ -35,16 +56,5 @@
 - radio 返回布尔值
 ```
 @model="exp"
-```
-
-## 入门
-```
-var vm = new ViewModel({
-    el: '#demo',
-    // 可省略，默认为 el.innerHTML，也可以是模板节点、模板数据
-    template: '#template',
-    data: {},
-    methods: {}
-});
 ```
 
