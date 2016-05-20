@@ -36,3 +36,15 @@
 ```
 @model="exp"
 ```
+
+## 入门
+```
+var vm = new ViewModel({
+    el: '#demo',
+    // 可省略，默认为 el.innerHTML，也可以是模板节点、模板数据
+    template: '#template',
+    data: {},
+    methods: {}
+});
+```
+
