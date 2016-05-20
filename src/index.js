@@ -103,7 +103,7 @@ var ViewModel = Events.extend({
     constructor: function (options) {
         var the = this;
 
-        the.Super();
+        ViewModel.parent(the);
 
         // 防止 data 被重写
         the[_options] = options = object.assign(false, {}, defaults, options);
@@ -233,7 +233,7 @@ var ViewModel = Events.extend({
         });
 
         attribute.removeAttr(the[_containerEl], NAMESPACE);
-        the.Super.destroy();
+        ViewModel.parent.destroy(the);
     }
 });
 var _options = ViewModel.sole();
@@ -515,15 +515,15 @@ pro[_initDirectiveModel] = function () {
         });
 
         beforeList.push(protectionName + '.pushIndex("' + className + '");');
-        beforeList.push(protectionName + '.pushListener("' + className + '", (function(' + contextName + ') {');
-        beforeList.push('return function(el, ev) {');
-        beforeList.push('if (typeof ' + indexName + ' === "number" && ' + protectionName + '.typeis.Array(' + parentName + ')) {');
-        beforeList.push(parentName + '.set(' + indexName + ', ' + protectionName + '.getModelValue(el, ev));');
-        beforeList.push('} else {');
-        beforeList.push(fullName + ' = ' + protectionName + '.getModelValue(el, ev);');
-        beforeList.push('}');
-        beforeList.push('}');
-        beforeList.push('}(' + contextName + ')));');
+        afterList.push(protectionName + '.pushListener("' + className + '", (function(' + contextName + ') {');
+        afterList.push('return function(el, ev) {');
+        afterList.push('if (typeof ' + indexName + ' === "number" && ' + protectionName + '.typeis.Array(' + parentName + ')) {');
+        afterList.push(parentName + '.set(' + indexName + ', ' + protectionName + '.getModelValue(el, ev));');
+        afterList.push('} else {');
+        afterList.push(fullName + ' = ' + protectionName + '.getModelValue(el, ev);');
+        afterList.push('}');
+        afterList.push('}');
+        afterList.push('}(' + contextName + ')));');
 
         vnode.attrs['class'] = vnode.attrs['class'] || '';
         vnode.attrs['class'] += ' ' + className;

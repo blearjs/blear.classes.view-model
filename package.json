@@ -55,6 +55,8 @@
     "blear.utils.access": "1.x"
   },
   "devDependencies": {
+    "blear.core.event": "1.x",
+    "blear.utils.howdo": "1.x",
     "jasmine-core": "^2.4.1",
     "karma": "^0.13.22",
     "karma-chrome-launcher": "^1.0.1",
