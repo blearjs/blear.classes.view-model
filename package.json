@@ -1,7 +1,7 @@
 {
   "name": "blear.classes.view-model",
-  "version": "1.0.5",
-  "description": "blearjs 的模块样板",
+  "version": "1.0.0",
+  "description": "视图数据模型",
   "scripts": {
     "live": "browser-sync start --config bs-config.js",
     "test": "node ./node_modules/.bin/karma start karma.conf.js --single-run",
@@ -16,7 +16,9 @@
   "main": "src/index.js",
   "keywords": [
     "blear",
-    "__template__",
+    "classes",
+    "view-model",
+    "MVVM",
     "cloudcome",
     "ydr.me"
   ],
@@ -35,7 +37,23 @@
     "url": "https://github.com/blearjs/blear.classes.view-model/issues"
   },
   "dependencies": {},
-  "peerDependencies": {},
+  "peerDependencies": {
+    "blear.classes.events": "1.x",
+    "blear.classes.template": "1.x",
+    "blear.classes.watcher": "1.x",
+    "blear.core.selector": "1.x",
+    "blear.core.attribute": "1.x",
+    "blear.core.event": "1.x",
+    "blear.shims.morphdom": "1.x",
+    "blear.utils.object": "1.x",
+    "blear.utils.array": "1.x",
+    "blear.utils.function": "1.x",
+    "blear.utils.string": "1.x",
+    "blear.utils.random": "1.x",
+    "blear.utils.typeis": "1.x",
+    "blear.utils.collection": "1.x",
+    "blear.utils.access": "1.x"
+  },
   "devDependencies": {
     "jasmine-core": "^2.4.1",
     "karma": "^0.13.22",
