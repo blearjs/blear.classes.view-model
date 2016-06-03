@@ -618,11 +618,11 @@ describe('测试文件', function () {
             })
             .follow(done);
     });
-
+    
     it('@model select:multiple', function (done) {
         var el = document.createElement('div');
         var id = 's' + new Date().getTime();
-
+    
         el.innerHTML = '<select @model="a" id="' + id + '" multiple>' +
             '<option value="1">1</option>' +
             '<option value="2">2</option>' +
@@ -631,10 +631,10 @@ describe('测试文件', function () {
             '</select>';
         var pEl = document.createElement('p');
         pEl.innerHTML = '{{a}}';
-
+    
         el.appendChild(pEl);
         document.body.appendChild(el);
-
+    
         var selecteEl = document.getElementById(id);
         var optionEls = selecteEl.getElementsByTagName('option');
         var data = {
@@ -644,12 +644,12 @@ describe('测试文件', function () {
             el: el,
             data: data
         });
-
+    
         howdo
             .task(function (next) {
                 expect(selecteEl.value).toEqual('2');
                 expect(pEl.innerHTML).toEqual('2');
-
+    
                 delay(next);
             })
             .task(function (next) {
@@ -658,24 +658,24 @@ describe('测试文件', function () {
                 optionEls[2].selected = true;
                 optionEls[3].selected = false;
                 event.emit(selecteEl, 'change');
-
+    
                 delay(next);
             })
             .task(function (next) {
                 expect(pEl.innerHTML).toEqual('1,2,3');
                 expect(data.a).toEqual(['1', '2', '3']);
-
+    
                 delay(next);
             })
             .task(function (next) {
                 vm.destroy();
                 document.body.removeChild(el);
-
+    
                 delay(next);
             })
             .follow(done);
     });
-
+    
     it('@model textarea', function (done) {
         var id = 'r' + new Date().getTime();
         var el = document.createElement('div');

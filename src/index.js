@@ -587,7 +587,6 @@ pro[_initDirectiveModel] = function () {
                     }
                 });
 
-
                 vnode.attrs.value = '{{' + value + '}}';
                 break;
 
