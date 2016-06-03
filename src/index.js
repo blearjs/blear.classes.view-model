@@ -7,21 +7,21 @@
 
 'use strict';
 
-var Events =     require('blear.classes.events');
-var Template =   require('blear.classes.template');
-var Watcher =    require('blear.classes.watcher');
-var selector =   require('blear.core.selector');
-var attribute =  require('blear.core.attribute');
-var event =      require('blear.core.event');
-var morphDom =   require('blear.shims.morphdom');
-var object =     require('blear.utils.object');
-var array =      require('blear.utils.array');
-var fun =        require('blear.utils.function');
-var string =     require('blear.utils.string');
-var random =     require('blear.utils.random');
-var typeis =     require('blear.utils.typeis');
+var Events = require('blear.classes.events');
+var Template = require('blear.classes.template');
+var Watcher = require('blear.classes.watcher');
+var selector = require('blear.core.selector');
+var attribute = require('blear.core.attribute');
+var event = require('blear.core.event');
+var morphDom = require('blear.shims.morphdom');
+var object = require('blear.utils.object');
+var array = require('blear.utils.array');
+var fun = require('blear.utils.function');
+var string = require('blear.utils.string');
+var random = require('blear.utils.random');
+var typeis = require('blear.utils.typeis');
 var collection = require('blear.utils.collection');
-var access =     require('blear.utils.access');
+var access = require('blear.utils.access');
 
 
 var win = window;
@@ -530,17 +530,31 @@ pro[_initDirectiveModel] = function () {
         // 设置值
         switch (vnode.tag) {
             case 'input':
+                var attrValue = vnode.attrs.value;
+                var isExp = Template.isExpression(attrValue);
+                var exp;
+
                 switch (vnode.attrs.type) {
                     case 'checkbox':
                         if (vnode.attrs.name) {
-                            vnode.attrs.checked = '{{' + protectionName + '.inArray(' + value + ', "' + vnode.attrs.value + '")}}';
+                            if (isExp) {
+                                exp = the[_tpl].parseExpression(attrValue);
+                                vnode.attrs.checked = '{{' + protectionName + '.inArray(' + value + ', String(' + exp + '))}}';
+                            } else {
+                                vnode.attrs.checked = '{{' + protectionName + '.inArray(' + value + ', String(' + attrValue + '))}}';
+                            }
                         } else {
                             vnode.attrs.checked = '{{' + value + ' === true}}';
                         }
                         break;
 
                     case 'radio':
-                        vnode.attrs.checked = '{{String(' + value + ') === String("' + vnode.attrs.value + '")}}';
+                        if (isExp) {
+                            exp = the[_tpl].parseExpression(attrValue);
+                            vnode.attrs.checked = '{{String(' + value + ') === String(' + exp + ')}}';
+                        } else {
+                            vnode.attrs.checked = '{{String(' + value + ') === String(' + attrValue + ')}}';
+                        }
                         break;
 
                     default:
