@@ -26,7 +26,7 @@ var access = require('blear.utils.access');
 
 var win = window;
 var doc = win.document;
-var supportsEvents = 'change,input,click,dblclick,focusin,focusout,keydown,keypress,keyup'.split(',');
+var supportsEvents = 'change,input,click,dblclick,mouseover,mouseout,focusin,focusout,keydown,keypress,keyup'.split(',');
 var gid = 0;
 var NAMESPACE = 'viewModel';
 var ELEMENT_NAME = '$el';
