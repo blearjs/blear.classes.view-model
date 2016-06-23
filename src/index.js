@@ -408,6 +408,17 @@ pro[_initProtection] = function () {
         pushListener: function (className, listener) {
             the[_protection].listeners[className] = the[_protection].listeners[className] || [];
             the[_protection].listeners[className].push(listener);
+        },
+
+        /**
+         * model change
+         * @param key
+         * @param val
+         * @param el
+         * @param ev
+         */
+        change: function (key, val, el, ev) {
+            the.emit('change', key, val, el, ev);
         }
     };
 };
@@ -505,28 +516,33 @@ pro[_initDirectiveModel] = function () {
         var className = genVMId();
         var paths = value.split('.');
         var contextName = paths.length > 1 ? paths.shift() : dataName;
-        var beforeList = [];
-        var afterList = [];
         var fullName = contextName + '.' + paths.join('.');
         var indexName = '""';
         var parentName = fullName.replace(reArrayIndex, function (soure, _indexName) {
             indexName = _indexName;
             return '';
         });
-
-        beforeList.push(protectionName + '.pushIndex("' + className + '");');
-        afterList.push(protectionName + '.pushListener("' + className + '", (function(' + contextName + ') {');
-        afterList.push('return function(el, ev) {');
-        afterList.push('if (typeof ' + indexName + ' === "number" && ' + protectionName + '.typeis.Array(' + parentName + ')) {');
-        afterList.push(parentName + '.set(' + indexName + ', ' + protectionName + '.getModelValue(el, ev));');
-        afterList.push('} else {');
-        afterList.push(fullName + ' = ' + protectionName + '.getModelValue(el, ev);');
-        afterList.push('}');
-        afterList.push('}');
-        afterList.push('}(' + contextName + ')));');
+        var beforeCode = ''.concat(
+            protectionName + '.pushIndex("' + className + '");'
+        );
+        var valueName = tpl.genVarName();
+        var afterCode = ''.concat(
+            protectionName + '.pushListener("' + className + '", (function(' + contextName + ') {',
+            /***/'return function(el, ev) {',
+            /***//***/'var ' + valueName + ' = ' + protectionName + '.getModelValue(el, ev);',
+            /***/ /***/'if (typeof ' + indexName + ' === "number" && ' + protectionName + '.typeis.Array(' + parentName + ')) {',
+            /***//***//***/parentName + '.set(' + indexName + ', ' + valueName + ');',
+            /***//***/'} else {',
+            /***//***//***/fullName + ' = ' + valueName + ';',
+            /***//***/'}',
+            /***//***/protectionName + '.change("' + fullName + '", ' + valueName + ', el, ev);',
+            /***/'}',
+            '}(' + contextName + ')));'
+        );
 
         vnode.attrs['class'] = vnode.attrs['class'] || '';
         vnode.attrs['class'] += ' ' + className;
+
         // 设置值
         switch (vnode.tag) {
             case 'input':
@@ -599,11 +615,11 @@ pro[_initDirectiveModel] = function () {
         }
 
         vnode.attrs[className] = '{{(' + protectionName + '.indexMap.' + className + '++)}}';
-
         the[_addEventProxy]('keyup', className);
         the[_addEventProxy]('change', className);
         the[_addEventProxy]('click', className);
-        return [beforeList.join('\n'), afterList.join('\n')];
+
+        return [beforeCode, afterCode];
     });
 };
 
