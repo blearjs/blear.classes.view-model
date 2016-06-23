@@ -417,8 +417,8 @@ pro[_initProtection] = function () {
          * @param el
          * @param ev
          */
-        change: function (key, val, el, ev) {
-            the.emit('change', key, val, el, ev);
+        modelChange: function (key, val, el, ev) {
+            the.emit('modelChange', key, val, el, ev);
         }
     };
 };
@@ -535,7 +535,7 @@ pro[_initDirectiveModel] = function () {
             /***//***/'} else {',
             /***//***//***/fullName + ' = ' + valueName + ';',
             /***//***/'}',
-            /***//***/protectionName + '.change("' + fullName + '", ' + valueName + ', el, ev);',
+            /***//***/protectionName + '.modelChange("' + fullName + '", ' + valueName + ', el, ev);',
             /***/'}',
             '}(' + contextName + ')));'
         );
