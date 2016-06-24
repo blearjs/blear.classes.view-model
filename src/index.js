@@ -169,10 +169,6 @@ var ViewModel = Events.extend({
         var the = this;
         var html = the[_tpl].render(the[_data], the[_protection]);
 
-        if (DEBUG) {
-            console.log(html);
-        }
-
         morphDom(the[_containerEl], '<div>' + html + '</div>', {
             childrenOnly: true,
             onBeforeNodeAdded: function (node) {
