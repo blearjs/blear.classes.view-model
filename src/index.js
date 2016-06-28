@@ -28,6 +28,7 @@ var access = require('blear.utils.access');
 var win = window;
 var doc = win.document;
 var supportsEvents = 'change,input,click,dblclick,mouseenter,mouseleave,mouseover,mouseout,focusin,focusout,keydown,keypress,keyup'.split(',');
+var MODEL_EVENTS = ['keyup', 'change', 'click'];
 var gid = 0;
 var NAMESPACE = 'viewModel';
 var ELEMENT_NAME = '$el';
@@ -637,9 +638,12 @@ pro[_initDirectiveModel] = function () {
         }
 
         vnode.attrs[className] = '{{(' + protectionName + '.indexMap.' + className + '++)}}';
-        the[_addEventProxy]('keyup', className);
-        the[_addEventProxy]('change', className);
-        the[_addEventProxy]('click', className);
+
+        var events = vnode.directives.model.filters.length ? vnode.directives.model.filters : MODEL_EVENTS;
+
+        array.each(events, function (index, eventType) {
+            the[_addEventProxy](eventType, className);
+        });
 
         return [beforeCode, afterCode];
     });
