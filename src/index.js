@@ -33,7 +33,7 @@ var ELEMENT_NAME = '$el';
 var EVENT_NAME = '$event';
 var WATCH_PREFIX = NAMESPACE + '-watch-';
 var EVENT_PROXY_ID_SPLIT = '/';
-var VIEW_MODEL_IGNORE = NAMESPACE + 'Ignore';
+var VIEW_MODEL_SKIP = NAMESPACE + 'Skip';
 var reMethods = /([a-z_$][\w$]*)(?:\((.*)\))?/i;
 var reComma = /,/g;
 var reArrayIndex = /\[(.*)]$/;
@@ -152,6 +152,7 @@ var ViewModel = Events.extend({
         // 初始化指令
         the[_initDirectiveEvent]();
         the[_initDirectiveModel]();
+        the[_initDirectiveSkip]();
 
         // watches
         object.each(options.watches, function (key, callback) {
@@ -169,25 +170,33 @@ var ViewModel = Events.extend({
     update: function () {
         var the = this;
         var html = the[_tpl].render(the[_data], the[_protection]);
+        var updateRule = function (fromEl) {
+            // 如果未匹配的节点是一个子 view-model 则忽略它
+            var fromId = attribute.attr(fromEl, NAMESPACE);
+
+            if (fromId) {
+                return false;
+            }
+
+            // 如果匹配到 view-model-skip 则忽略它
+            if (attribute.hasAttr(fromEl, VIEW_MODEL_SKIP)) {
+                return false;
+            }
+        };
 
         morphDom(the[_containerEl], '<div>' + html + '</div>', {
             childrenOnly: true,
             onBeforeNodeAdded: function (node) {
-                //
+                if (node.nodeType === 1) {
+                    return updateRule(node);
+                }
+            },
+            onBeforeElUpdated: function (fromEl, toEl) {
+                return updateRule(fromEl);
             },
             onBeforeNodeDiscarded: function (fromNode, toNode) {
                 if (fromNode.nodeType === 1) {
-                    // 如果未匹配的节点是一个子 view-model 则忽略它
-                    var fromId = attribute.attr(fromNode, NAMESPACE);
-
-                    if (fromId) {
-                        return false;
-                    }
-
-                    // 如果匹配到 view-model-ignore 则忽略它
-                    if (attribute.hasAttr(fromNode, VIEW_MODEL_IGNORE)) {
-                        return false;
-                    }
+                    return updateRule(fromNode);
                 }
             }
         });
@@ -249,6 +258,7 @@ var _watcher = ViewModel.sole();
 var _reDirective = ViewModel.sole();
 var _initDirectiveEvent = ViewModel.sole();
 var _initDirectiveModel = ViewModel.sole();
+var _initDirectiveSkip = ViewModel.sole();
 var _watch = ViewModel.sole();
 var _addEventProxy = ViewModel.sole();
 var _eventProxyMap = ViewModel.sole();
@@ -623,6 +633,14 @@ pro[_initDirectiveModel] = function () {
 
         return [beforeCode, afterCode];
     });
+};
+
+
+/**
+ * 初始化 skip 指令
+ */
+pro[_initDirectiveSkip] = function () {
+
 };
 
 
