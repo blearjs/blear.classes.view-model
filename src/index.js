@@ -33,6 +33,7 @@ var ELEMENT_NAME = '$el';
 var EVENT_NAME = '$event';
 var WATCH_PREFIX = NAMESPACE + '-watch-';
 var EVENT_PROXY_ID_SPLIT = '/';
+var VIEW_MODEL_IGNORE = NAMESPACE + 'Ignore';
 var reMethods = /([a-z_$][\w$]*)(?:\((.*)\))?/i;
 var reComma = /,/g;
 var reArrayIndex = /\[(.*)]$/;
@@ -180,6 +181,11 @@ var ViewModel = Events.extend({
                     var fromId = attribute.attr(fromNode, NAMESPACE);
 
                     if (fromId) {
+                        return false;
+                    }
+
+                    // 如果匹配到 view-model-ignore 则忽略它
+                    if (attribute.hasAttr(fromNode, VIEW_MODEL_IGNORE)) {
                         return false;
                     }
                 }
