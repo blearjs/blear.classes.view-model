@@ -12,6 +12,7 @@ var Template = require('blear.classes.template');
 var Watcher = require('blear.classes.watcher');
 var selector = require('blear.core.selector');
 var attribute = require('blear.core.attribute');
+var modification = require('blear.core.modification');
 var event = require('blear.core.event');
 var morphDom = require('blear.shims.morphdom');
 var object = require('blear.utils.object');
@@ -108,7 +109,7 @@ var ViewModel = Events.extend({
 
         // 防止 data 被重写
         the[_options] = options = object.assign(false, {}, defaults, options);
-        the[_containerEl] = selector.query(options.el)[0];
+        the.el = the[_containerEl] = selector.query(options.el)[0];
         the[_instanceFilters] = {};
 
         if (!the[_containerEl]) {
@@ -170,36 +171,45 @@ var ViewModel = Events.extend({
     update: function () {
         var the = this;
         var html = the[_tpl].render(the[_data], the[_protection]);
-        var updateRule = function (fromEl) {
-            // 如果未匹配的节点是一个子 view-model 则忽略它
-            var fromId = attribute.attr(fromEl, NAMESPACE);
-
-            if (fromId) {
-                return false;
-            }
-
-            // 如果匹配到 view-model-skip 则忽略它
-            if (attribute.hasAttr(fromEl, VIEW_MODEL_SKIP)) {
-                return false;
-            }
-        };
 
         morphDom(the[_containerEl], '<div>' + html + '</div>', {
             childrenOnly: true,
-            onBeforeNodeAdded: function (node) {
-                if (node.nodeType === 1) {
-                    return updateRule(node);
-                }
-            },
-            onBeforeElUpdated: function (fromEl, toEl) {
-                return updateRule(fromEl);
-            },
             onBeforeNodeDiscarded: function (fromNode, toNode) {
                 if (fromNode.nodeType === 1) {
-                    return updateRule(fromNode);
+                    return !(attribute.hasAttr(fromNode, NAMESPACE) || attribute.hasAttr(fromNode, VIEW_MODEL_SKIP) );
                 }
             }
         });
+    },
+
+
+    /**
+     * 使用 vm 模式插入 DOM，该 DOM 不会被当前 view-model 管理
+     * @param source
+     * @param [target]
+     * @param [position]
+     * @returns {*}
+     */
+    insert: function (source, target, position) {
+        var the = this;
+        var args = access.args(arguments);
+
+        switch (args.length) {
+            case 1:
+                target = the[_containerEl];
+                break;
+
+            case 2:
+                if (typeis.String(args[1])) {
+                    position = args[1];
+                    target = the[_containerEl];
+                }
+                break;
+        }
+
+        var el = modification.insert(source, target, position);
+        attribute.attr(el, VIEW_MODEL_SKIP, 'true');
+        return el;
     },
 
 
@@ -640,7 +650,11 @@ pro[_initDirectiveModel] = function () {
  * 初始化 skip 指令
  */
 pro[_initDirectiveSkip] = function () {
+    var the = this;
+    // @skip
+    the[_tpl].directive('skip', 10, function (vnode, directive) {
 
+    });
 };
 
 
