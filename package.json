@@ -1,6 +1,6 @@
 {
   "name": "blear.classes.view-model",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "视图数据模型类",
   "scripts": {
     "live": "browser-sync start --config bs-config.js",

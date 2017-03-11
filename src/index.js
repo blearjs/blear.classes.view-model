@@ -230,22 +230,12 @@ var ViewModel = Events.extend({
 
 
     /**
-     * 获取数据
-     * @returns {*}
-     */
-    data: function () {
-        return this[_watcher].data();
-    },
-
-
-    /**
      * 销毁实例
      */
     destroy: function () {
         var the = this;
 
         the[_destroyed] = true;
-        the[_data] = the.data();
 
         // 取消所有绑定的事件
         object.each(the[_eventProxyMap], function (proxyId, listener) {
@@ -255,27 +245,28 @@ var ViewModel = Events.extend({
         });
 
         attribute.removeAttr(the[_containerEl], NAMESPACE);
-        ViewModel.parent.destroy(the);
+        ViewModel.invoke('destroy', the);
     }
 });
-var _options = ViewModel.sole();
-var _instanceFilters = ViewModel.sole();
-var _containerEl = ViewModel.sole();
-var _templateEl = ViewModel.sole();
-var _template = ViewModel.sole();
-var _tpl = ViewModel.sole();
-var _data = ViewModel.sole();
-var _watcher = ViewModel.sole();
-var _reDirective = ViewModel.sole();
-var _initDirectiveEvent = ViewModel.sole();
-var _initDirectiveModel = ViewModel.sole();
-var _initDirectiveSkip = ViewModel.sole();
-var _watch = ViewModel.sole();
-var _addEventProxy = ViewModel.sole();
-var _eventProxyMap = ViewModel.sole();
-var _destroyed = ViewModel.sole();
-var _initProtection = ViewModel.sole();
-var _protection = ViewModel.sole();
+var sole = ViewModel.sole;
+var _options = sole();
+var _instanceFilters = sole();
+var _containerEl = sole();
+var _templateEl = sole();
+var _template = sole();
+var _tpl = sole();
+var _data = sole();
+var _watcher = sole();
+var _reDirective = sole();
+var _initDirectiveEvent = sole();
+var _initDirectiveModel = sole();
+var _initDirectiveSkip = sole();
+var _watch = sole();
+var _addEventProxy = sole();
+var _eventProxyMap = sole();
+var _destroyed = sole();
+var _initProtection = sole();
+var _protection = sole();
 var pro = ViewModel.prototype;
 
 
